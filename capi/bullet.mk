@@ -1,5 +1,5 @@
 # root of bullet source code
-BULL=../../bullet3/src/
+BULL=../bullet3/src/
 
 # sources required from each bullet component
 CollisionShapesSRC=$(BULL)BulletCollision/CollisionShapes/btConcaveShape.cpp \
@@ -17,8 +17,9 @@ CollisionShapesSRC=$(BULL)BulletCollision/CollisionShapes/btConcaveShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btCylinderShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btCompoundShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btSdfCollisionShape.cpp \
-		$(BULL)BulletCollision/CollisionShapes/btMiniSDF.cpp
-		
+		$(BULL)BulletCollision/CollisionShapes/btMiniSDF.cpp \
+		$(BULL)BulletCollision/CollisionShapes/btHeightfieldTerrainShape.cpp
+
 CollisionDispatchSRC=$(BULL)BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.cpp \
 		$(BULL)BulletCollision/CollisionDispatch/btCollisionDispatcher.cpp \
 		$(BULL)BulletCollision/CollisionDispatch/SphereTriangleDetector.cpp \
@@ -39,14 +40,14 @@ CollisionDispatchSRC=$(BULL)BulletCollision/CollisionDispatch/btDefaultCollision
 		$(BULL)BulletCollision/CollisionDispatch/btConvexConcaveCollisionAlgorithm.cpp \
 		$(BULL)BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.cpp \
 		$(BULL)BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.cpp
-		
+
 BroadphaseCollisionSRC=$(BULL)BulletCollision/BroadphaseCollision/btQuantizedBvh.cpp \
 		$(BULL)BulletCollision/BroadphaseCollision/btCollisionAlgorithm.cpp \
 		$(BULL)BulletCollision/BroadphaseCollision/btOverlappingPairCache.cpp \
 		$(BULL)BulletCollision/BroadphaseCollision/btDbvt.cpp \
 		$(BULL)BulletCollision/BroadphaseCollision/btDispatcher.cpp \
 		$(BULL)BulletCollision/BroadphaseCollision/btDbvtBroadphase.cpp
-		
+
 NarrowPhaseCollisionSRC=$(BULL)BulletCollision/NarrowPhaseCollision/btPersistentManifold.cpp \
 		$(BULL)BulletCollision/NarrowPhaseCollision/btMinkowskiPenetrationDepthSolver.cpp \
 		$(BULL)BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.cpp \
@@ -59,10 +60,10 @@ NarrowPhaseCollisionSRC=$(BULL)BulletCollision/NarrowPhaseCollision/btPersistent
 		$(BULL)BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.cpp \
 		$(BULL)BulletCollision/NarrowPhaseCollision/btRaycastCallback.cpp \
 		$(BULL)BulletCollision/NarrowPhaseCollision/btGjkEpa2.cpp
-		
+
 DynamicsSRC=$(BULL)BulletDynamics/Dynamics/btRigidBody.cpp \
 		$(BULL)BulletDynamics/Dynamics/btDiscreteDynamicsWorld.cpp
-		
+
 ConstraintSolverSRC=$(BULL)BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.cpp \
 		$(BULL)BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp \
 		$(BULL)BulletDynamics/ConstraintSolver/btConeTwistConstraint.cpp \
@@ -75,7 +76,7 @@ LinearMathSRC=$(BULL)LinearMath/btConvexHullComputer.cpp \
 		$(BULL)LinearMath/btGeometryUtil.cpp \
 		$(BULL)LinearMath/btQuickprof.cpp \
 		$(BULL)LinearMath/btAlignedAllocator.cpp
-		
+
 # list .o files for each bullet component
 LinearMathOBJ=$(patsubst $(BULL)LinearMath/%.cpp,obj/%.o,$(LinearMathSRC))
 ConstraintSolverOBJ=$(patsubst $(BULL)BulletDynamics/ConstraintSolver/%.cpp,obj/%.o,$(ConstraintSolverSRC))
@@ -85,34 +86,35 @@ BroadphaseCollisionOBJ=$(patsubst $(BULL)BulletCollision/BroadphaseCollision/%.c
 CollisionDispatchOBJ=$(patsubst $(BULL)BulletCollision/CollisionDispatch/%.cpp,obj/%.o,$(CollisionDispatchSRC))
 CollisionShapesOBJ=$(patsubst $(BULL)BulletCollision/CollisionShapes/%.cpp,obj/%.o,$(CollisionShapesSRC))
 
-# all the bullet components together (object files)		
+# all the bullet components together (object files)
 BOBJ=$(LinearMathOBJ) $(ConstraintSolverOBJ) $(DynamicsOBJ) \
 	$(NarrowPhaseCollisionOBJ) $(BroadphaseCollisionOBJ) \
-	$(CollisionDispatchOBJ) $(CollisionShapesOBJ) $(SharedMemoryOBJ) 
-
+	$(CollisionDispatchOBJ) $(CollisionShapesOBJ) $(SharedMemoryOBJ)
 
 # compile rule for each component of bullet
 $(LinearMathOBJ):	obj/%.o: $(BULL)LinearMath/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(ConstraintSolverOBJ):	obj/%.o: $(BULL)BulletDynamics/ConstraintSolver/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(DynamicsOBJ):	obj/%.o: $(BULL)BulletDynamics/Dynamics/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(NarrowPhaseCollisionOBJ):	obj/%.o: $(BULL)BulletCollision/NarrowPhaseCollision/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(BroadphaseCollisionOBJ):	obj/%.o: $(BULL)BulletCollision/BroadphaseCollision/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(CollisionDispatchOBJ):	obj/%.o: $(BULL)BulletCollision/CollisionDispatch/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 $(CollisionShapesOBJ):	obj/%.o: $(BULL)BulletCollision/CollisionShapes/%.cpp
-	g++ $(FLAGS) -o $@ $^
+	g++ $(CFLAGS) -fPIC -o $@ $^
 
 lib/libbullet.a: $(BOBJ)
 	ar -cvq lib/libbullet.a $(BOBJ)
 
+lib/libbullet.so: $(BOBJ)
+	g++ $^ -o $@ -shared -Wl,-soname,libbullet.so

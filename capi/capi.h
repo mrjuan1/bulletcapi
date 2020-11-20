@@ -1,12 +1,13 @@
 
-/** @file capi.h
+/**
+ * @file capi.h
  * @brief a C wrapper for the bullet physics engine
  * @author Chris Camacho (codifies)
  * @author http://bedroomcoders.co.uk/captcha/
  */
 
-// note to self, use camel case, because such irrelevancies, upsets reddit
-
+// Note to self: Use camel case, because such irrelevancies rightfully upsets
+// Reddit
 
 #ifndef CAPI_H
 #define CAPI_H
@@ -23,19 +24,19 @@
 // Vec has 4 components so it can be used for quaternions too...
 /** struct to hold vector or quaternions */
 typedef struct {
-	float x,y,z,w;
+	float x, y, z, w;
 } Vec;
 
 // copied from btBroadphaseProxy.h so C app doesn't have to import
-// bullet c++ headers
+// Bullet C++ headers
 //
 // TODO !!! find some better way!
-// 
-// NB will need to recopy this if it changes in bullet - not ideal...
-// have to rename enums so no duplicate definition for C++ "wrapper"
+//
+// NB will need to recopy this if it changes in Bullet - not ideal...
+// Have to rename enums so no duplicate definition for C++ "wrapper"
+
 /** \cond HIDDEN */
-enum BroadphaseNativeTypesCOPY
-{
+enum BroadphaseNativeTypesCOPY {
 	// polyhedral convex shapes
 	xBOX_SHAPE_PROXYTYPE,
 	xTRIANGLE_SHAPE_PROXYTYPE,
@@ -44,8 +45,8 @@ enum BroadphaseNativeTypesCOPY
 	xCONVEX_HULL_SHAPE_PROXYTYPE,
 	xCONVEX_POINT_CLOUD_SHAPE_PROXYTYPE,
 	xCUSTOM_POLYHEDRAL_SHAPE_TYPE,
-//implicit convex shapes
-xIMPLICIT_CONVEX_SHAPES_START_HERE,
+	// implicit convex shapes
+	xIMPLICIT_CONVEX_SHAPES_START_HERE,
 	xSPHERE_SHAPE_PROXYTYPE,
 	xMULTI_SPHERE_SHAPE_PROXYTYPE,
 	xCAPSULE_SHAPE_PROXYTYPE,
@@ -58,24 +59,25 @@ xIMPLICIT_CONVEX_SHAPES_START_HERE,
 	xBOX_2D_SHAPE_PROXYTYPE,
 	xCONVEX_2D_SHAPE_PROXYTYPE,
 	xCUSTOM_CONVEX_SHAPE_TYPE,
-//concave shapes
-xCONCAVE_SHAPES_START_HERE,
-	//keep all the convex shapetype below here, for the check IsConvexShape in broadphase proxy!
+	// concave shapes
+	xCONCAVE_SHAPES_START_HERE,
+	// keep all the convex shapetype below here, for the check IsConvexShape in
+	// broadphase proxy!
 	xTRIANGLE_MESH_SHAPE_PROXYTYPE,
 	xSCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE,
-	///used for demo integration FAST/Swift collision library and Bullet
+	/// used for demo integration FAST/Swift collision library and Bullet
 	xFAST_CONCAVE_MESH_PROXYTYPE,
-	//terrain
+	// terrain
 	xTERRAIN_SHAPE_PROXYTYPE,
-///Used for GIMPACT Trimesh integration
+	/// Used for GIMPACT Trimesh integration
 	xGIMPACT_SHAPE_PROXYTYPE,
-///Multimaterial mesh
-    xMULTIMATERIAL_TRIANGLE_MESH_PROXYTYPE,
-	
+	/// Multimaterial mesh
+	xMULTIMATERIAL_TRIANGLE_MESH_PROXYTYPE,
+
 	xEMPTY_SHAPE_PROXYTYPE,
 	xSTATIC_PLANE_PROXYTYPE,
 	xCUSTOM_CONCAVE_SHAPE_TYPE,
-xCONCAVE_SHAPES_END_HERE,
+	xCONCAVE_SHAPES_END_HERE,
 
 	xCOMPOUND_SHAPE_PROXYTYPE,
 
@@ -85,38 +87,37 @@ xCONCAVE_SHAPES_END_HERE,
 	xINVALID_SHAPE_PROXYTYPE,
 
 	xMAX_BROADPHASE_COLLISION_TYPES
-	
+
 };
 /** \endcond */
 
-/** types used to distinguish shape types 
+/** types used to distinguish shape types
  *
 	@param T_SPHERE sphere type
 	@param T_BOX box type
 	@param T_CYLINDER cylinder type
 	@param T_COMPOUND compound type
 */
-typedef enum { 
-	T_SPHERE		=	xSPHERE_SHAPE_PROXYTYPE,
-	T_BOX			=	xBOX_SHAPE_PROXYTYPE,
-	T_CYLINDER		=	xCYLINDER_SHAPE_PROXYTYPE,
-	T_COMPOUND		=	xCOMPOUND_SHAPE_PROXYTYPE
+typedef enum {
+	T_SPHERE = xSPHERE_SHAPE_PROXYTYPE,
+	T_BOX = xBOX_SHAPE_PROXYTYPE,
+	T_CYLINDER = xCYLINDER_SHAPE_PROXYTYPE,
+	T_COMPOUND = xCOMPOUND_SHAPE_PROXYTYPE
 } ShapeType;
 
 // See TODO re: BroadphaseNativeTypesCOPY
-/** values used to set constraint params 
+/** values used to set constraint params
  * @param C_ERP
  * @param C_STOP_ERP
  * @param C_CFM
  * @param C_STOP_CFM
  * */
-typedef enum  {
-	C_ERP=1,		//BT_CONSTRAINT_ERP=1,	
-	C_STOP_ERP,		//BT_CONSTRAINT_STOP_ERP,
-	C_CFM,			//BT_CONSTRAINT_CFM,
-	C_STOP_CFM		//BT_CONSTRAINT_STOP_CFM
+typedef enum {
+	C_ERP = 1,	 // BT_CONSTRAINT_ERP=1,
+	C_STOP_ERP,	 // BT_CONSTRAINT_STOP_ERP,
+	C_CFM,		 // BT_CONSTRAINT_CFM,
+	C_STOP_CFM	 // BT_CONSTRAINT_STOP_CFM
 } ConstraintParams;
-
 
 /** apply an impulse to a body
  * @param body
@@ -179,7 +180,7 @@ void bodyGetOrientation(void* body, Vec* r);
  * @param body
  * @param pos the supplied structured is filled in with the position
  */
-void bodyGetPosition(void* body, Vec* pos );
+void bodyGetPosition(void* body, Vec* pos);
 
 /** get the position and orientation of a body
  * @param body
@@ -223,10 +224,10 @@ void bodySetDeactivation(void* b, bool v);
 /** set bodies friction
  * @param s the body
  * @param f friction
- */ 
+ */
 void bodySetFriction(void* s, float f);
 
-/** set the velocity of a body - 
+/** set the velocity of a body -
  * this should not be used every frame rather this should be used one
  * off in special circumstances like teleportation
  * @param body
@@ -238,17 +239,18 @@ void bodySetLinearVelocity(void* body, Vec v);
  * @param body
  * @param pos the position
  */
-void bodySetPosition(void* body, Vec pos );
+void bodySetPosition(void* body, Vec pos);
 
 /** set the restitution of a body (bouncy-ness)
  * @param body
  * @param r restitution
  */
 void bodySetRestitution(void* body, float r);
- 
+
 /** sets a bodies rotation - see warning in bodySetLinearVelocity
  * @param body
- * @param r rotation (as a vec instead of three floats - see bodySetRotationEular)
+ * @param r rotation (as a vec instead of three floats - see
+ * bodySetRotationEuler)
  */
 void bodySetRotation(void* body, Vec r);
 
@@ -256,20 +258,22 @@ void bodySetRotation(void* body, Vec r);
  * @param body
  * @param pitch,yaw,roll rotations around the x,y & z axis respectivly
  */
-void bodySetRotationEular(void* body, float pitch, float yaw, float roll);
+void bodySetRotationEuler(void* body, float pitch, float yaw, float roll);
 
 /** set the collision callback
  * @param u the universe
  * @param callback function pointer to the contact callback
- * 
- * void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm)
+ *
+ * void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec*
+ * norm)
  * @param b1 body A
  * @param b2 body B
  * @param ptA point in body A of the contact
  * @param ptB point in body B of the contact
  * @param norm the collision normal
  */
-void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const Vec*, const Vec*) );
+void collisionCallback(void* u, void (*callback)(void*, void*, const Vec*,
+												 const Vec*, const Vec*));
 
 /** adds other primatives to the compound shape
  * @param compound pointer to the compound shape
@@ -278,7 +282,7 @@ void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const 
  * @param yaw,pitch,roll local rotation in the compound
  */
 void compoundAddChild(void* compound, void* child, float x, float y, float z,
-						float yaw, float pitch, float roll);
+					  float yaw, float pitch, float roll);
 
 /** number of shapes in a compound
  * @param s shape
@@ -300,7 +304,7 @@ bool constraintIsEnabled(void* c);
 /** enable or disable a constraint
  * @param c constraint pointer
  * @param en true or false to enable / disable
- */ 
+ */
 void constraintSetEnabled(void* c, bool en);
 
 /** sets a constrains parameters
@@ -321,7 +325,7 @@ void constraintSetParam(void* c, int num, float value, int axis);
  * @param childAxis orientation of child
  */
 void* hinge2Create(void* u, void* bodyA, void* bodyB, Vec anchor,
-								Vec parentAxis, Vec childAxis, bool collide);
+				   Vec parentAxis, Vec childAxis, bool collide);
 
 /** enable (or disable) a motor on a hinge2 constraint
  * @param h pointer to hinge2 constraint
@@ -361,13 +365,14 @@ void hinge2setLowerLimit(void* h, float l);
  */
 void hinge2setMaxMotorForce(void* h, int index, float force);
 
-/** sets stifness for a hinge2 axis
+/** sets stiffness for a hinge2 axis
  * @param h pointer to hinge2 constraint
  * @param index the axis
  * @param stiffness how stiff the axis is
  * @param limitIfNeeded normally defaults to true
  */
-void hinge2setStiffness(void* h, int index, float stiffness, bool limitIfNeeded);
+void hinge2setStiffness(void* h, int index, float stiffness,
+						bool limitIfNeeded);
 
 /** set the target velocity for a hinge2 axis motor
  * @param h pointer to hinge2 constraint
@@ -390,20 +395,19 @@ void hinge2setUpperLimit(void* h, float l);
  * @param refA use reference frame A or not
  * @param collide should these bodies collide or not
  */
-void* hingeCreate(void* uni, void* bodyA, void* bodyB, 
-					Vec pivA, Vec rotA, 
-					Vec pivB, Vec rotB, bool refA, bool collide);
+void* hingeCreate(void* uni, void* bodyA, void* bodyB, Vec pivA, Vec rotA,
+				  Vec pivB, Vec rotB, bool refA, bool collide);
 
 /** enable rotational motor for a hinge
  * @param hinge pointer to the constraint
  * @param enableMotor true enable
- * @param targetVelocity the motor will always try to achive this velocity
+ * @param targetVelocity the motor will always try to achieve this velocity
  * @param maxMotorImpulse limits the impulse the motor can use
  */
-void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity,
-								float maxMotorImpulse);
+void hingeEnableAngularMotor(void* hinge, bool enableMotor,
+							 float targetVelocity, float maxMotorImpulse);
 
-/** set the hinge angluar limit
+/** set the hinge angular limit
  * @param hinge pointer to the joint
  * @param low set the lower limit  < -PI is unlimited
  * @param hi set the upper limit  > PI is unlimited
@@ -416,12 +420,12 @@ void hingeSetLimit(void* hinge, float low, float hi);
  * @param ex X extent of the box
  * @param ey Y extent of the box
  * @param ez Z extent of the box
- */ 
+ */
 void* shapeCreateBox(void* uni, float ex, float ey, float ez);
 
 /** create a compound shape
  * @param u the universe that this shape is in
- * 
+ *
  * The compound shape is a "empty" shape you add other shapes
  * to, to make a single more complex shape.
  */
@@ -432,21 +436,21 @@ void* shapeCreateCompound(void* u);
  * @param r the radius of the cylinder
  * @param l the length of the cylinder
  */
-void* shapeCreateCylinderX(void* u,  float r, float l);
+void* shapeCreateCylinderX(void* u, float r, float l);
 
 /** creates a cylinder shape, length along the Y axis
  * @param u the universe that releases this shape
  * @param r the radius of the cylinder
  * @param l the length of the cylinder
  */
-void* shapeCreateCylinderY(void* u,  float r, float l);
+void* shapeCreateCylinderY(void* u, float r, float l);
 
 /** creates a cylinder shape, length along the Z axis
  * @param u the universe that releases this shape
  * @param r the radius of the cylinder
  * @param l the length of the cylinder
  */
-void* shapeCreateCylinderZ(void* u,  float r, float l);
+void* shapeCreateCylinderZ(void* u, float r, float l);
 
 /** creates a sphere shape
  * @param u the universe that releases this shape
@@ -457,18 +461,18 @@ void* shapeCreateSphere(void* u, float re);
 /** delete a shape
  * @param u universe pointer
  * @param s shape
- */ 
+ */
 void shapeDelete(void* u, void* s);
 
-/** creates a physics environment 
- * @return pointer to the environment 
+/** creates a physics environment
+ * @return pointer to the environment
  */
 void* universeCreate();
 
 /** releases the environment
  * @param uni pointer to the previously created environment
  */
-void universeDestroy(void* uni); /// muhahahaha
+void universeDestroy(void* uni);  /// muhahahaha
 
 /** sets the environments gravity */
 void universeSetGravity(void* uni, float x, float y, float z);
@@ -476,13 +480,8 @@ void universeSetGravity(void* uni, float x, float y, float z);
 /** step the universe (time)
  * @param u the environment to step
  * @param dt the amount of time to step
- * @param i number of iterations 
+ * @param i number of iterations
  */
 void universeStep(void* u, float dt, int i);
 
-
-#endif
-
-
-
-
+#endif	// CAPI_H

@@ -1,0 +1,10 @@
+bullet3/
+
+capi/obj/*.o
+capi/lib/*.a
+capi/lib/*.so
+capi/test
+capi/test-shared
+
+include/
+lib/

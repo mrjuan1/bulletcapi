@@ -1,31 +1,41 @@
+CFLAGS=-c -I$(BULL) -O3 -pipe -m64
+CFLAGS+=-ftree-vectorize -ffast-math -funroll-loops
+#CFLAGS+=-Wfatal-errors
 
-FLAGS=-Ofast -c -I$(BULL) --fast-math
-#-Wfatal-errors
-
-
-all: test
+all: test test-shared
 
 include bullet.mk
-	
-capi.a: capi.cpp lib/libbullet.a
-	g++ $(FLAGS) capi.cpp -o obj/capi.o
-	ar rcs capi.a obj/capi.o
 
-test: obj/test.o capi.a 
-	g++ obj/test.o capi.a lib/libbullet.a -o test
+install: all
+	@mkdir -pv ../include ../lib
+	@cp -v capi.h ../include
+	@cp -v lib/libbullet.so lib/libcapi.so ../lib
+	@strip -s ../lib/libbullet.so ../lib/libcapi.so
+
+clean:
+	@rm -fv test test-shared
+	@rm -fv obj/test.o obj/capi.o
+	@rm -fv lib/libcapi.a lib/libcapi.so
+
+distclean: clean
+	@rm -fv obj/*.o
+	@rm -fv lib/libbullet.a lib/libbullet.so
+	@rm -Rfv ../include ../lib
+
+obj/capi.o: capi.cpp
+	g++ -c $< -o $@ $(CFLAGS) -fPIC
+
+lib/libcapi.a: obj/capi.o
+	ar rcs $@ $<
+
+lib/libcapi.so: obj/capi.o
+	g++ $< -o $@ -shared -Wl,-soname,libcapi.so
 
 obj/test.o: test.c
-	gcc -std=c11 $(FLAGS) test.c -o obj/test.o
+	gcc -c $< -o $@ -nocpp $(CFLAGS)
 
-cleanall: clean		
-	rm -rf obj/*.o
-	rm -rf lib/libbullet.a
-	
-clean:
-	rm -rf test
-	rm -rf obj/test.o
-	rm -rf obj/capi.o
-	rm -rf capi.a
-	
-	
+test: obj/test.o lib/libcapi.a lib/libbullet.a
+	g++ $^ -o $@
 
+test-shared: obj/test.o lib/libbullet.so lib/libcapi.so
+	gcc $< -o $@ -Llib -Wl,-rpath,lib -lbullet -lcapi
