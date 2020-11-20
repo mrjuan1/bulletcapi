@@ -8,3 +8,7 @@ capi/test-shared
 
 include/
 lib/
+
+gluTest/obj/*.o
+gluTest/main
+gluTest/main-shared
