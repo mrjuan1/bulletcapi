@@ -1,5 +1,5 @@
 all:
-	@make -C capi install
+	@make -C capi -j$(shell nproc) install
 	@make -C gluTest
 
 clean:
